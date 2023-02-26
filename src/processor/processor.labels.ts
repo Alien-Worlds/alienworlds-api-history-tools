@@ -17,6 +17,8 @@ export enum ProcessorLabel {
   PtpxyWorldsDeltaProcessor = 'PTPXY_WORLDS_DELTA_PROCESSOR',
   NftmtWorldsActionProcessor = 'NFTMT_WORLDS_ACTION_PROCESSOR',
   NftmtWorldsDeltaProcessor = 'NFTMT_WORLDS_DELTA_PROCESSOR',
+  NotifyWorldActionProcessor = 'NOTIFY_WORLD_ACTION_PROCESSOR',
+  NotifyWorldDeltaProcessor = 'NOTIFY_WORLD_DELTA_PROCESSOR',
   AwlndratingsActionProcessor = 'AWLNDRATINGS_ACTION_PROCESSOR',
   AwlndratingsDeltaProcessor = 'AWLNDRATINGS_DELTA_PROCESSOR',
 }

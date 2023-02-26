@@ -2,7 +2,6 @@ import { buildConfig } from './../config/config';
 import { log } from '@alien-worlds/api-core';
 import { startBlockRange } from '@alien-worlds/api-history-tools';
 import { Command } from 'commander';
-import { setupDependencies } from './block-range.ioc.config';
 import { buildBlockRangeConfig } from './block-range.config';
 import { BlockRangeOptions } from './block-range.types';
 
@@ -10,8 +9,6 @@ const program = new Command();
 
 const start = async (options: BlockRangeOptions) => {
   const config = buildConfig();
-  // setup IOC
-  await setupDependencies(config);
   // setup process config
   const blockRangeConfig = buildBlockRangeConfig(options, config);
 

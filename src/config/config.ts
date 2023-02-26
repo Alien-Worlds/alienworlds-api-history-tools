@@ -108,18 +108,11 @@ export const buildConfig = (): HistoryToolsConfig => {
         },
       },
       taskQueue: {
-        useSession: Boolean(
-          Number(environment.PROCESSOR_USE_SESSION || dotEnv.PROCESSOR_USE_SESSION)
-        ),
-        readConcern:
-          environment.PROCESSOR_QUEUE_READ_CONCERN || dotEnv.PROCESSOR_QUEUE_READ_CONCERN,
-        readPreference:
-          environment.PROCESSOR_QUEUE_READ_PREFERENCE ||
-          dotEnv.PROCESSOR_QUEUE_READ_PREFERENCE,
-        writeConcern:
-          environment.PROCESSOR_QUEUE_WRITE_CONCERN ||
-          dotEnv.PROCESSOR_QUEUE_WRITE_CONCERN,
+        interval: 5000,
       },
+    },
+    api: {
+      port: 5000,
     },
   };
 };

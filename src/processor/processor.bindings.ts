@@ -20,6 +20,8 @@ import OtherWorldsActionProcessor from './processors/other-worlds/other-worlds.a
 import OtherWorldsDeltaProcessor from './processors/other-worlds/other-worlds.delta-processor';
 import PtpxyWorldsActionProcessor from './processors/ptpxy-worlds/ptpxy-worlds.action-processor';
 import PtpxyWorldsDeltaProcessor from './processors/ptpxy-worlds/ptpxy-worlds.delta-processor';
+import NotifyWorldActionProcessor from './processors/notify-world/notify-world.action-processor';
+import NotifyWorldDeltaProcessor from './processors/notify-world/notify-world.delta-processor';
 
 const container = new WorkerContainer();
 
@@ -50,6 +52,9 @@ container.bind(ProcessorLabel.PtpxyWorldsDeltaProcessor, PtpxyWorldsDeltaProcess
 // 'nftmt.worlds'
 container.bind(ProcessorLabel.NftmtWorldsActionProcessor, NftmtWorldsActionProcessor);
 container.bind(ProcessorLabel.NftmtWorldsDeltaProcessor, NftmtWorldsDeltaProcessor);
+// 'notify.world'
+container.bind(ProcessorLabel.NotifyWorldActionProcessor, NotifyWorldActionProcessor);
+container.bind(ProcessorLabel.NotifyWorldDeltaProcessor, NotifyWorldDeltaProcessor);
 // 'awlndratings'
 container.bind(ProcessorLabel.AwlndratingsActionProcessor, AwlndratingsActionProcessor);
 container.bind(ProcessorLabel.AwlndratingsDeltaProcessor, AwlndratingsDeltaProcessor);

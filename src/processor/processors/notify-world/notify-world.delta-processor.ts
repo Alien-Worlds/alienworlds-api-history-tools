@@ -1,23 +1,25 @@
 import { log } from '@alien-worlds/api-core';
 import {
-  ActionTraceProcessor,
+  DeltaProcessor,
   ProcessorSharedData,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
+import { NotifyWorldContract } from '@alien-worlds/alienworlds-api-common';
 
 type ContractData = { [key: string]: unknown };
 
-export default class FederationActionProcessor extends ActionTraceProcessor<ContractData> {
+export default class NotifyWorldDeltaProcessor extends DeltaProcessor<ContractData> {
   public async run(
     model: ProcessorTaskModel,
     sharedData: ProcessorSharedData
   ): Promise<void> {
     try {
       await super.run(model, sharedData);
-      // ...
-  } catch (error){
-    log(error);
-    this.reject(error);
+
+      //...
+    } catch (error) {
+      log(error);
+      this.reject(error);
+    }
   }
-}
 }

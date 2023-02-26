@@ -37,8 +37,9 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@alien-worlds/api-core": "^0.0.68",
-    "@alien-worlds/api-history-tools": "^0.0.79",
+    "@alien-worlds/alienworlds-api-common": "^0.0.16",
+    "@alien-worlds/api-core": "^0.0.72",
+    "@alien-worlds/api-history-tools": "^0.0.83",
     "commander": "^9.4.1",
     "reflect-metadata": "^0.1.13"
   }
