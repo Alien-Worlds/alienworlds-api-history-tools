@@ -14,7 +14,7 @@ export default class SFederationDeltaProcessor extends DeltaProcessor<ContractDa
   ): Promise<void> {
     try {
       await super.run(model, sharedData);
-      
+      this.resolve();
     } catch (error) {
       log(error);
       this.reject(error);

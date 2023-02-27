@@ -14,7 +14,7 @@ export default class SFederationActionProcessor extends ActionTraceProcessor<Con
   ): Promise<void> {
     try {
       await super.run(model, sharedData);
-      
+      this.resolve();
   } catch (error){
     log(error);
     this.reject(error);

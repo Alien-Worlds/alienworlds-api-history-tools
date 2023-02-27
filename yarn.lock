@@ -33,10 +33,10 @@
     node-fetch "2"
     reflect-metadata "^0.1.13"
 
-"@alien-worlds/api-history-tools@^0.0.83":
-  version "0.0.83"
-  resolved "https://npm.pkg.github.com/download/@alien-worlds/api-history-tools/0.0.83/747d0def0bc12d76344207f3cf7930cae6d411ef#747d0def0bc12d76344207f3cf7930cae6d411ef"
-  integrity sha512-palQL+XeTzMF4TH7YzC14Uxsk1c0fQQ42rd9opzSMeE5HC75CwDMSrjdBbViXx+db6N/qhTrvEt4jiCYcECJhQ==
+"@alien-worlds/api-history-tools@^0.0.85":
+  version "0.0.85"
+  resolved "https://npm.pkg.github.com/download/@alien-worlds/api-history-tools/0.0.85/63713d805583b7a1b1a71de0ce6c03083b618ec1#63713d805583b7a1b1a71de0ce6c03083b618ec1"
+  integrity sha512-FtceyjniJfqxId9Pkb8cRWm8mZp53Ctu+hlCwaideprh4OeFlPiyGF7YfG2O7Y6XXBE5dD4dBJzSW2VPxMaTYQ==
   dependencies:
     "@alien-worlds/api-core" "^0.0.72"
     "@eosrio/node-abieos" "^1"

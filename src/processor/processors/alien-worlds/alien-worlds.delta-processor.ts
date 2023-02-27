@@ -1,4 +1,9 @@
-import { ContractDelta, ContractUnkownDataEntity, DataSourceOperationError, log } from '@alien-worlds/api-core';
+import {
+  ContractDelta,
+  ContractUnkownDataEntity,
+  DataSourceOperationError,
+  log,
+} from '@alien-worlds/api-core';
 import {
   DeltaProcessor,
   ProcessorSharedData,
