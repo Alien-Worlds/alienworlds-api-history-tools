@@ -11,6 +11,7 @@ const start = async (options: ProcessorOptions) => {
   // setup process config
   const config = buildConfig();
   const processorConfig = buildProcessorConfig(options, config);
+
   startProcessor(processorConfig).catch(log);
 };
 

@@ -40,6 +40,13 @@ export default {
     {
       shipTraceMessageName: ['transaction_trace_v0'],
       shipActionTraceMessageName: ['action_trace_v0', 'action_trace_v1'],
+      contract: ['notify.world'],
+      action: ['*'],
+      processor: ProcessorLabel.NotifyWorldActionProcessor,
+    },
+    {
+      shipTraceMessageName: ['transaction_trace_v0'],
+      shipActionTraceMessageName: ['action_trace_v0', 'action_trace_v1'],
       contract: ['other.worlds'],
       action: ['*'],
       processor: ProcessorLabel.OtherWorldsActionProcessor,
@@ -113,6 +120,14 @@ export default {
       scope: ['*'],
       table: ['*'],
       processor: ProcessorLabel.UsptsWorldsDeltaProcessor,
+    },
+    {
+      shipDeltaMessageName: ['table_delta_v0'],
+      name: ['contract_row'],
+      code: ['notify.world'],
+      scope: ['*'],
+      table: ['*'],
+      processor: ProcessorLabel.NotifyWorldDeltaProcessor,
     },
     {
       shipDeltaMessageName: ['table_delta_v0'],

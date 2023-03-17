@@ -1,9 +1,9 @@
+import { Broadcast } from '@alien-worlds/api-core';
 import { buildConfig } from './../config/config';
-import { startBroadcastServer } from '@alien-worlds/api-history-tools';
 
 const start = () => {
   const config = buildConfig();
-  startBroadcastServer(config.broadcast);
+  Broadcast.startServer(config.broadcast);
 };
 
 start();

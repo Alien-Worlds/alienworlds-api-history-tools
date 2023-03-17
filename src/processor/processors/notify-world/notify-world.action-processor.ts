@@ -1,19 +1,41 @@
-import { NotifyWorldContract } from '@alien-worlds/alienworlds-api-common';
+import {
+  LeaderboardInput,
+  NotifyWorldContract,
+} from '@alien-worlds/alienworlds-api-common';
 import {
   ContractAction,
   ContractUnkownDataEntity,
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import {
-  ActionTraceProcessor,
-  ProcessorSharedData,
-  ProcessorTaskModel,
-} from '@alien-worlds/api-history-tools';
+import { ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { ProcessorSharedData } from '../../processor.types';
+import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class NotifyWorldActionProcessor extends ActionTraceProcessor<ContractData> {
+export default class NotifyWorldActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
+  private async storeLeaderboard(
+    blockNumber: bigint,
+    blockTimestamp: Date,
+    struct: NotifyWorldContract.Actions.Types.LogmineStruct
+  ) {
+    const { leaderboard } = this;
+    const { miner, land_id, planet_name, bag_items, bounty } = struct;
+
+    return leaderboard.update(
+      LeaderboardInput.fromStruct({
+        wallet_id: miner,
+        block_number: blockNumber.toString(),
+        block_timestamp: blockTimestamp.toISOString(),
+        bounty,
+        land_id,
+        planet_name,
+        bag_items,
+      })
+    );
+  }
+
   public async run(
     model: ProcessorTaskModel,
     sharedData: ProcessorSharedData
@@ -45,9 +67,10 @@ export default class NotifyWorldActionProcessor extends ActionTraceProcessor<Con
 
       const repository = await Ioc.setupNotifyWorldActionRepository(mongoSource);
       if (name === NotifyWorldActionName.Logmine) {
-        contractModel.data = Entities.LogMine.fromStruct(
-          <NotifyWorldContract.Actions.Types.LogmineStruct>data
-        );
+        const logmineStruct = <NotifyWorldContract.Actions.Types.LogmineStruct>data;
+        contractModel.data = Entities.LogMine.fromStruct(logmineStruct);
+        //
+        await this.storeLeaderboard(blockNumber, blockTimestamp, logmineStruct);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

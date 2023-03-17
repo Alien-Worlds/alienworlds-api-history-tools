@@ -1,23 +1,88 @@
-import { log } from '@alien-worlds/api-core';
 import {
-  ActionTraceProcessor,
-  ProcessorSharedData,
-  ProcessorTaskModel,
-} from '@alien-worlds/api-history-tools';
+  FederationContract,
+  LeaderboardInput,
+} from '@alien-worlds/alienworlds-api-common';
+import {
+  ContractAction,
+  ContractUnkownDataEntity,
+  DataSourceOperationError,
+  log,
+} from '@alien-worlds/api-core';
+import { ProcessorSharedData, ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class FederationActionProcessor extends ActionTraceProcessor<ContractData> {
+export default class FederationActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
   public async run(
     model: ProcessorTaskModel,
     sharedData: ProcessorSharedData
   ): Promise<void> {
     try {
       await super.run(model, sharedData);
-      this.resolve();
-  } catch (error){
-    log(error);
-    this.reject(error);
+      const { Ioc, FederationActionName, Entities } = FederationContract.Actions;
+      const { input, mongoSource, leaderboard } = this;
+      const {
+        blockNumber,
+        blockTimestamp,
+        account,
+        name,
+        recvSequence,
+        globalSequence,
+        transactionId,
+        data,
+      } = input;
+      const contractModel = {
+        blockNumber,
+        blockTimestamp,
+        account,
+        name,
+        receiverSequence: recvSequence,
+        globalSequence,
+        transactionId,
+        data: null,
+      };
+
+      const repository = await Ioc.setupFederationActionRepository(mongoSource);
+      if (name === FederationActionName.Settag) {
+        const settagStruct = <FederationContract.Actions.Types.SettagStruct>data;
+        contractModel.data = Entities.SetTag.fromStruct(settagStruct);
+
+        leaderboard.update(
+          LeaderboardInput.fromStruct({
+            block_number: contractModel.blockNumber.toString(),
+            block_timestamp: contractModel.blockTimestamp.toISOString(),
+            wallet_id: settagStruct.account,
+            username: settagStruct.tag,
+          })
+        );
+      } else {
+        /*
+        In the case of an action (test or former etc.) that is not included in the current ABI and 
+        for which we do not have defined types, we must save the object in its primary form.
+        */
+        contractModel.data = ContractUnkownDataEntity.create(data);
+      }
+
+      const result = await repository.add(ContractAction.create(contractModel));
+
+      if (result.isFailure) {
+        const {
+          failure: { error },
+        } = result;
+        if ((<DataSourceOperationError>error).isDuplicateError) {
+          log(`Resolving a task containing duplicate documents: ${error.message}`);
+          this.resolve(contractModel);
+        } else {
+          log(error);
+          this.reject(error);
+        }
+      } else {
+        this.resolve(result.content);
+      }
+    } catch (error) {
+      log(error);
+      this.reject(error);
+    }
   }
-}
 }

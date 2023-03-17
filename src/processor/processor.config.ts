@@ -4,21 +4,31 @@ import { ProcessorOptions } from './processor.types';
 export const buildProcessorConfig = (
   options: ProcessorOptions,
   config: HistoryToolsConfig,
-  sharedData?: unknown
+  sharedData?: { [key: string]: unknown }
 ): ProcessorConfig => {
   const {
     broadcast,
     processor: { workers, taskQueue },
     featured,
     mongo,
+    leaderboard,
+    atomicassets,
   } = config;
 
   if (options.threads) {
     workers.threadsCount = options.threads;
   }
 
+  workers.sharedData = {
+    config: {
+      leaderboard,
+      mongo,
+      atomicassets,
+    },
+  };
+
   if (sharedData) {
-    workers.sharedData = sharedData;
+    Object.assign(workers.sharedData, sharedData);
   }
 
   return {
@@ -27,5 +37,6 @@ export const buildProcessorConfig = (
     mongo,
     workers,
     queue: taskQueue,
+    customProcessorLoaderPath: `${__dirname}/processor.worker-loader`,
   };
 };

@@ -1,19 +1,19 @@
-import { UsptsWorldsContract } from '@alien-worlds/alienworlds-api-common';
+import {
+  LeaderboardInput,
+  UsptsWorldsContract,
+} from '@alien-worlds/alienworlds-api-common';
 import {
   ContractAction,
   ContractUnkownDataEntity,
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import {
-  ActionTraceProcessor,
-  ProcessorSharedData,
-  ProcessorTaskModel,
-} from '@alien-worlds/api-history-tools';
+import { ProcessorSharedData, ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class UsptsWorldsActionProcessor extends ActionTraceProcessor<ContractData> {
+export default class UsptsWorldsActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
   public async run(
     model: ProcessorTaskModel,
     sharedData: ProcessorSharedData
@@ -21,7 +21,7 @@ export default class UsptsWorldsActionProcessor extends ActionTraceProcessor<Con
     try {
       await super.run(model, sharedData);
       const { Ioc, UsptsWorldsActionName, Entities } = UsptsWorldsContract.Actions;
-      const { input, mongoSource } = this;
+      const { input, mongoSource, leaderboard } = this;
       const {
         blockNumber,
         blockTimestamp,
@@ -45,8 +45,16 @@ export default class UsptsWorldsActionProcessor extends ActionTraceProcessor<Con
 
       const repository = await Ioc.setupUsptsWorldsActionRepository(mongoSource);
       if (name === UsptsWorldsActionName.AddPoints) {
-        contractModel.data = Entities.AddPoints.fromStruct(
-          <UsptsWorldsContract.Actions.Types.AddpointsStruct>data
+        const addpointsStruct = <UsptsWorldsContract.Actions.Types.AddpointsStruct>data;
+        contractModel.data = Entities.AddPoints.fromStruct(addpointsStruct);
+
+        leaderboard.update(
+          LeaderboardInput.fromStruct({
+            block_number: contractModel.blockNumber.toString(),
+            block_timestamp: contractModel.blockTimestamp.toISOString(),
+            wallet_id: addpointsStruct.user,
+            points: addpointsStruct.points,
+          })
         );
       } else {
         /*

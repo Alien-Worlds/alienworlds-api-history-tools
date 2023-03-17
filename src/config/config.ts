@@ -4,6 +4,10 @@ import { FeaturedConfig } from '@alien-worlds/api-history-tools/build/common/fea
 import featuredConfig from '../featured';
 import { readEnvFile } from './config.utils';
 import { Environment } from './config.types';
+import {
+  AtomicAssetsConfig,
+  LeaderboardServiceConfig,
+} from '@alien-worlds/alienworlds-api-common';
 
 export const buildConfig = (): HistoryToolsConfig => {
   const environment: Environment = { ...process.env } as Environment;
@@ -20,6 +24,28 @@ export const buildConfig = (): HistoryToolsConfig => {
     replicaSet: environment.MONGO_REPLICA_SET || dotEnv.MONGO_REPLICA_SET,
     authMechanism: environment.MONGO_AUTH_MECHANISM || dotEnv.MONGO_AUTH_MECHANISM,
     authSource: environment.MONGO_AUTH_SOURCE || dotEnv.MONGO_AUTH_SOURCE,
+  };
+
+  const leaderboard: LeaderboardServiceConfig = {
+    api: {
+      host: environment.LEADERBOARD_API_HOST || dotEnv.LEADERBOARD_API_HOST,
+      port: Number(environment.LEADERBOARD_API_PORT || dotEnv.LEADERBOARD_API_PORT),
+      secure: Boolean(
+        Number(environment.LEADERBOARD_API_SECURE || dotEnv.LEADERBOARD_API_SECURE)
+      ),
+    },
+    mongo,
+  };
+
+  const atomicassets: AtomicAssetsConfig = {
+    api: {
+      host: environment.ATOMICASSETS_API_HOST || dotEnv.ATOMICASSETS_API_HOST,
+      port: Number(environment.ATOMICASSETS_API_PORT || dotEnv.ATOMICASSETS_API_PORT),
+      secure: Boolean(
+        Number(environment.ATOMICASSETS_API_SECURE || dotEnv.ATOMICASSETS_API_SECURE)
+      ),
+    },
+    mongo,
   };
 
   return {
@@ -82,11 +108,6 @@ export const buildConfig = (): HistoryToolsConfig => {
           environment.BLOCK_RANGE_INVIOLABLE_THREADS_COUNT ||
             dotEnv.BLOCK_RANGE_INVIOLABLE_THREADS_COUNT
         ),
-        sharedData: {
-          config: {
-            mongo,
-          },
-        },
       },
     },
     processor: {
@@ -101,11 +122,6 @@ export const buildConfig = (): HistoryToolsConfig => {
         containerPath: `${__dirname}/../${
           environment.PROCESSOR_BINDINGS_PATH || dotEnv.PROCESSOR_BINDINGS_PATH
         }`,
-        sharedData: {
-          config: {
-            mongo,
-          },
-        },
       },
       taskQueue: {
         interval: 5000,
@@ -114,6 +130,8 @@ export const buildConfig = (): HistoryToolsConfig => {
     api: {
       port: 5000,
     },
+    leaderboard,
+    atomicassets,
   };
 };
 
