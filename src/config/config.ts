@@ -1,4 +1,4 @@
-import { MongoConfig, parseToBigInt } from '@alien-worlds/api-core';
+import { MongoConfig, parseToBigInt, BroadcastConfig } from '@alien-worlds/api-core';
 import { HistoryToolsConfig } from '@alien-worlds/api-history-tools';
 import { FeaturedConfig } from '@alien-worlds/api-history-tools/build/common/featured';
 import featuredConfig from '../featured';
@@ -48,13 +48,22 @@ export const buildConfig = (): HistoryToolsConfig => {
     mongo,
   };
 
+  const broadcast: BroadcastConfig = {
+    url: environment.BROADCAST_URL || dotEnv.BROADCAST_URL,
+    port: Number(environment.BROADCAST_PORT || dotEnv.BROADCAST_PORT),
+    host: environment.BROADCAST_HOST || dotEnv.BROADCAST_HOST,
+    driver: environment.BROADCAST_DRIVER || dotEnv.BROADCAST_DRIVER,
+  };
+
+  const externalBroadcast: BroadcastConfig = {
+    port: Number(environment.EXTERNAL_BROADCAST_PORT || dotEnv.EXTERNAL_BROADCAST_PORT),
+    host: environment.EXTERNAL_BROADCAST_HOST || dotEnv.EXTERNAL_BROADCAST_HOST,
+    driver: environment.EXTERNAL_BROADCAST_DRIVER || dotEnv.EXTERNAL_BROADCAST_DRIVER,
+  };
+
   return {
-    broadcast: {
-      url: environment.BROADCAST_URL || dotEnv.BROADCAST_URL,
-      port: Number(environment.BROADCAST_PORT || dotEnv.BROADCAST_PORT),
-      host: environment.BROADCAST_HOST || dotEnv.BROADCAST_HOST,
-      driver: environment.BROADCAST_DRIVER || dotEnv.BROADCAST_DRIVER,
-    },
+    broadcast,
+    externalBroadcast,
     blockchain: {
       endpoint: environment.BLOCKCHAIN_ENDPOINT || dotEnv.BLOCKCHAIN_ENDPOINT,
       chainId: environment.BLOCKCHAIN_CHAIN_ID || dotEnv.BLOCKCHAIN_CHAIN_ID,

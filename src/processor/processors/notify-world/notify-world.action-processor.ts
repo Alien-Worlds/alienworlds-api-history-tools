@@ -1,7 +1,4 @@
-import {
-  LeaderboardInput,
-  NotifyWorldContract,
-} from '@alien-worlds/alienworlds-api-common';
+import { NotifyWorldContract } from '@alien-worlds/alienworlds-api-common';
 import {
   ContractAction,
   ContractUnkownDataEntity,
@@ -9,33 +6,13 @@ import {
   log,
 } from '@alien-worlds/api-core';
 import { ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { LeaderboardUpdateBroadcastMessage } from '../../../internal-broadcast/internal-broadcast.message';
 import { ProcessorSharedData } from '../../processor.types';
 import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
 export default class NotifyWorldActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
-  private async storeLeaderboard(
-    blockNumber: bigint,
-    blockTimestamp: Date,
-    struct: NotifyWorldContract.Actions.Types.LogmineStruct
-  ) {
-    const { leaderboard } = this;
-    const { miner, land_id, planet_name, bag_items, bounty } = struct;
-
-    return leaderboard.update(
-      LeaderboardInput.fromStruct({
-        wallet_id: miner,
-        block_number: blockNumber.toString(),
-        block_timestamp: blockTimestamp.toISOString(),
-        bounty,
-        land_id,
-        planet_name,
-        bag_items,
-      })
-    );
-  }
-
   public async run(
     model: ProcessorTaskModel,
     sharedData: ProcessorSharedData
@@ -43,7 +20,7 @@ export default class NotifyWorldActionProcessor extends ExtendedActionTraceProce
     try {
       await super.run(model, sharedData);
       const { Ioc, NotifyWorldActionName, Entities } = NotifyWorldContract.Actions;
-      const { input, mongoSource } = this;
+      const { input, mongoSource, broadcast } = this;
       const {
         blockNumber,
         blockTimestamp,
@@ -70,7 +47,7 @@ export default class NotifyWorldActionProcessor extends ExtendedActionTraceProce
         const logmineStruct = <NotifyWorldContract.Actions.Types.LogmineStruct>data;
         contractModel.data = Entities.LogMine.fromStruct(logmineStruct);
         //
-        await this.storeLeaderboard(blockNumber, blockTimestamp, logmineStruct);
+        broadcast.sendMessage(LeaderboardUpdateBroadcastMessage.create(logmineStruct));
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

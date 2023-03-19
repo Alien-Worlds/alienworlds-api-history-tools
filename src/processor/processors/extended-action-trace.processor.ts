@@ -4,20 +4,19 @@ import {
   AtomicAssetRepository,
   LeaderboardService,
 } from '@alien-worlds/alienworlds-api-common';
-import { MongoSource } from '@alien-worlds/api-core';
+import { BroadcastClient, MongoSource } from '@alien-worlds/api-core';
 import {
   ActionTraceProcessor,
   ActionTraceProcessorInput,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
 
-export class ExtendedActionTraceProcessor<
-  DataType
-> extends ActionTraceProcessor<DataType> {
+export class ExtendedActionTraceProcessor<DataType> extends ActionTraceProcessor<DataType> {
   constructor(
     mongoSource: MongoSource,
     protected leaderboard: LeaderboardService,
-    protected atomicassets: AtomicAssetRepository
+    protected atomicassets: AtomicAssetRepository,
+    protected broadcast: BroadcastClient
   ) {
     super(mongoSource);
   }

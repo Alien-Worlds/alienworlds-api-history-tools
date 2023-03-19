@@ -1,7 +1,4 @@
-import {
-  FederationContract,
-  LeaderboardInput,
-} from '@alien-worlds/alienworlds-api-common';
+import { FederationContract } from '@alien-worlds/alienworlds-api-common';
 import {
   ContractAction,
   ContractUnkownDataEntity,
@@ -9,6 +6,7 @@ import {
   log,
 } from '@alien-worlds/api-core';
 import { ProcessorSharedData, ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { LeaderboardUpdateBroadcastMessage } from '../../../internal-broadcast/internal-broadcast.message';
 import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
@@ -21,7 +19,7 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
     try {
       await super.run(model, sharedData);
       const { Ioc, FederationActionName, Entities } = FederationContract.Actions;
-      const { input, mongoSource, leaderboard } = this;
+      const { input, mongoSource, broadcast } = this;
       const {
         blockNumber,
         blockTimestamp,
@@ -47,15 +45,8 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
       if (name === FederationActionName.Settag) {
         const settagStruct = <FederationContract.Actions.Types.SettagStruct>data;
         contractModel.data = Entities.SetTag.fromStruct(settagStruct);
-
-        leaderboard.update(
-          LeaderboardInput.fromStruct({
-            block_number: contractModel.blockNumber.toString(),
-            block_timestamp: contractModel.blockTimestamp.toISOString(),
-            wallet_id: settagStruct.account,
-            username: settagStruct.tag,
-          })
-        );
+        //
+        broadcast.sendMessage(LeaderboardUpdateBroadcastMessage.create(settagStruct));
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

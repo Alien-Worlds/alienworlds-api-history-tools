@@ -1,5 +1,5 @@
 import { Broadcast } from '@alien-worlds/api-core';
-import { buildConfig } from './../config/config';
+import { buildConfig } from '../config/config';
 
 const start = () => {
   const config = buildConfig();

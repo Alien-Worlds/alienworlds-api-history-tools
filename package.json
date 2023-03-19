@@ -13,7 +13,8 @@
     "clean": "rm -rf ./build",
     "build": "yarn clean && tsc -b",
     "build:prod": "yarn clean && tsc --project tsconfig.build.json",
-    "broadcast": "node build/broadcast/index.js",
+    "broadcast": "node build/internal-broadcast/index.js",
+    "broadcast:external": "node build/external-broadcast/index.js",
     "filler": "node build/filler/index.js",
     "block-range": "node build/block-range/index.js",
     "processor": "node build/processor/index.js",
@@ -37,9 +38,9 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@alien-worlds/alienworlds-api-common": "^0.0.33",
-    "@alien-worlds/api-core": "^0.0.75",
-    "@alien-worlds/api-history-tools": "^0.0.88",
+    "@alien-worlds/alienworlds-api-common": "^0.0.40",
+    "@alien-worlds/api-core": "^0.0.77",
+    "@alien-worlds/api-history-tools": "^0.0.89",
     "commander": "^9.4.1",
     "reflect-metadata": "^0.1.13"
   }

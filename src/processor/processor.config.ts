@@ -24,6 +24,7 @@ export const buildProcessorConfig = (
       leaderboard,
       mongo,
       atomicassets,
+      broadcast,
     },
   };
 

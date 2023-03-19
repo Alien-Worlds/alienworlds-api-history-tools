@@ -13,6 +13,9 @@ export type Environment = {
   BROADCAST_PORT?: string;
   BROADCAST_HOST?: string;
   BROADCAST_DRIVER?: string;
+  EXTERNAL_BROADCAST_PORT?: string;
+  EXTERNAL_BROADCAST_HOST?: string;
+  EXTERNAL_BROADCAST_DRIVER?: string;
   BLOCKCHAIN_ENDPOINT?: string;
   BLOCKCHAIN_CHAIN_ID?: string;
   SCANNER_NODES_MAX_CHUNK_SIZE?: string;
