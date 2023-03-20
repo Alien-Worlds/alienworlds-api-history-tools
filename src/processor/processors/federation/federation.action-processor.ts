@@ -46,7 +46,13 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
         const settagStruct = <FederationContract.Actions.Types.SettagStruct>data;
         contractModel.data = Entities.SetTag.fromStruct(settagStruct);
         //
-        broadcast.sendMessage(LeaderboardUpdateBroadcastMessage.create(settagStruct));
+        broadcast.sendMessage(
+          LeaderboardUpdateBroadcastMessage.create(
+            contractModel.blockNumber,
+            contractModel.blockTimestamp,
+            settagStruct
+          )
+        );
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

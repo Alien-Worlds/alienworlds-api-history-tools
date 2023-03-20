@@ -46,7 +46,15 @@ export default class UsptsWorldsActionProcessor extends ExtendedActionTraceProce
         const addpointsStruct = <UsptsWorldsContract.Actions.Types.AddpointsStruct>data;
         contractModel.data = Entities.AddPoints.fromStruct(addpointsStruct);
         //
-        broadcast.sendMessage(LeaderboardUpdateBroadcastMessage.create(addpointsStruct));
+        broadcast.sendMessage(
+          LeaderboardUpdateBroadcastMessage.create(
+            contractModel.blockNumber,
+            contractModel.blockTimestamp,
+            null,
+            null,
+            addpointsStruct
+          )
+        );
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

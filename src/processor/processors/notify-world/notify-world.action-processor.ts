@@ -47,7 +47,14 @@ export default class NotifyWorldActionProcessor extends ExtendedActionTraceProce
         const logmineStruct = <NotifyWorldContract.Actions.Types.LogmineStruct>data;
         contractModel.data = Entities.LogMine.fromStruct(logmineStruct);
         //
-        broadcast.sendMessage(LeaderboardUpdateBroadcastMessage.create(logmineStruct));
+        broadcast.sendMessage(
+          LeaderboardUpdateBroadcastMessage.create(
+            contractModel.blockNumber,
+            contractModel.blockTimestamp,
+            null,
+            logmineStruct
+          )
+        );
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

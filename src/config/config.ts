@@ -9,7 +9,13 @@ import {
   LeaderboardServiceConfig,
 } from '@alien-worlds/alienworlds-api-common';
 
-export const buildConfig = (): HistoryToolsConfig => {
+export type AlienworldsHistoryToolsConfig = HistoryToolsConfig & {
+  externalBroadcast: BroadcastConfig;
+  leaderboard: LeaderboardServiceConfig;
+  atomicassets: AtomicAssetsConfig;
+};
+
+export const buildConfig = (): AlienworldsHistoryToolsConfig => {
   const environment: Environment = { ...process.env } as Environment;
   const dotEnv = readEnvFile();
 
