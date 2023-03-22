@@ -24,10 +24,10 @@ export const startExternalBroadcast = async (
   broadcast.onMessage(InternalBroadcastChannel.ExternalBroadcast, async message => {
     // send message with blockchain data (logmine, settag or addpoints)
     // to all instances of leaderboard API
-    server.sendMessageToChannel(
-      ExternalBroadcastChannel.LeaderboardUpdate,
-      (<LeaderboardUpdateMessage>message.content).data
-    );
+    // server.sendMessageToChannel(
+    //   ExternalBroadcastChannel.LeaderboardUpdate,
+    //   (<LeaderboardUpdateMessage>message.content).data
+    // );
   });
 
   // run internal listener (client)

@@ -10,8 +10,13 @@ import {
   ActionTraceProcessorInput,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
+import { ExtendedLeaderboardServiceConfig } from '../../config/config';
+import { updateLeaderboards } from '../leaderboard/leaderboard.utils';
+import { ProcessorSharedData } from '../processor.types';
 
-export class ExtendedActionTraceProcessor<DataType> extends ActionTraceProcessor<DataType> {
+export class ExtendedActionTraceProcessor<
+  DataType
+> extends ActionTraceProcessor<DataType> {
   constructor(
     mongoSource: MongoSource,
     protected leaderboard: LeaderboardService,
@@ -21,7 +26,23 @@ export class ExtendedActionTraceProcessor<DataType> extends ActionTraceProcessor
     super(mongoSource);
   }
 
-  public async run(data: ProcessorTaskModel, sharedData: unknown): Promise<void> {
+  protected async sendLeaderboard(
+    blockNumber: bigint,
+    blockTimestamp: Date,
+    sharedData: ProcessorSharedData
+  ) {
+    const { leaderboard, config } = sharedData;
+    const { batchSize, api } = config.leaderboard as ExtendedLeaderboardServiceConfig;
+
+    if ((batchSize > 0 && leaderboard.length >= batchSize) || batchSize === 0) {
+      await updateLeaderboards(blockNumber, blockTimestamp, leaderboard, api);
+    }
+  }
+
+  public async run(
+    data: ProcessorTaskModel,
+    sharedData: ProcessorSharedData
+  ): Promise<void> {
     this.input = ActionTraceProcessorInput.create<DataType>(data);
   }
 }

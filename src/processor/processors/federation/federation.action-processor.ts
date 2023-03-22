@@ -5,7 +5,8 @@ import {
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import { ProcessorSharedData, ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { ProcessorTaskModel } from '@alien-worlds/api-history-tools';
+import { ProcessorSharedData } from '../../processor.types';
 import { LeaderboardUpdateBroadcastMessage } from '../../../internal-broadcast/internal-broadcast.message';
 import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
@@ -46,13 +47,15 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
         const settagStruct = <FederationContract.Actions.Types.SettagStruct>data;
         contractModel.data = Entities.SetTag.fromStruct(settagStruct);
         //
-        broadcast.sendMessage(
-          LeaderboardUpdateBroadcastMessage.create(
-            contractModel.blockNumber,
-            contractModel.blockTimestamp,
-            settagStruct
-          )
-        );
+        // broadcast.sendMessage(
+        //   LeaderboardUpdateBroadcastMessage.create(
+        //     contractModel.blockNumber,
+        //     contractModel.blockTimestamp,
+        //     settagStruct
+        //   )
+        // );
+        sharedData.leaderboard.push(settagStruct);
+        await this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

@@ -26,6 +26,7 @@ export const buildProcessorConfig = (
       atomicassets,
       broadcast,
     },
+    leaderboard: [],
   };
 
   if (sharedData) {

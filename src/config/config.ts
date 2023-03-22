@@ -15,6 +15,10 @@ export type AlienworldsHistoryToolsConfig = HistoryToolsConfig & {
   atomicassets: AtomicAssetsConfig;
 };
 
+export type ExtendedLeaderboardServiceConfig = LeaderboardServiceConfig & {
+  batchSize: number;
+};
+
 export const buildConfig = (): AlienworldsHistoryToolsConfig => {
   const environment: Environment = { ...process.env } as Environment;
   const dotEnv = readEnvFile();
@@ -32,15 +36,19 @@ export const buildConfig = (): AlienworldsHistoryToolsConfig => {
     authSource: environment.MONGO_AUTH_SOURCE || dotEnv.MONGO_AUTH_SOURCE,
   };
 
-  const leaderboard: LeaderboardServiceConfig = {
+  const leaderboard: ExtendedLeaderboardServiceConfig = {
     api: {
       host: environment.LEADERBOARD_API_HOST || dotEnv.LEADERBOARD_API_HOST,
       port: Number(environment.LEADERBOARD_API_PORT || dotEnv.LEADERBOARD_API_PORT),
+
       secure: Boolean(
         Number(environment.LEADERBOARD_API_SECURE || dotEnv.LEADERBOARD_API_SECURE)
       ),
     },
     mongo,
+    batchSize: Number(
+      environment.LEADERBOARD_API_BATCH_SIZE || dotEnv.LEADERBOARD_API_BATCH_SIZE
+    ),
   };
 
   const atomicassets: AtomicAssetsConfig = {

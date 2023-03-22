@@ -41,6 +41,7 @@ export type Environment = {
   LEADERBOARD_API_PORT?: number;
   LEADERBOARD_API_HOST?: string;
   LEADERBOARD_API_SECURE?: number;
+  LEADERBOARD_API_BATCH_SIZE?: number;
   ATOMICASSETS_API_PORT?: number;
   ATOMICASSETS_API_HOST?: string;
   ATOMICASSETS_API_SECURE?: number;
