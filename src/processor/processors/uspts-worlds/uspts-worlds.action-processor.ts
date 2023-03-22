@@ -57,7 +57,7 @@ export default class UsptsWorldsActionProcessor extends ExtendedActionTraceProce
         //   )
         // );
         sharedData.leaderboard.push(addpointsStruct);
-        await this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
+        this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

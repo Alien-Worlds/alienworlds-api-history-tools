@@ -32,10 +32,10 @@ export class ExtendedActionTraceProcessor<
     sharedData: ProcessorSharedData
   ) {
     const { leaderboard, config } = sharedData;
-    const { batchSize, api } = config.leaderboard as ExtendedLeaderboardServiceConfig;
+    const { batchSize } = config.leaderboard as ExtendedLeaderboardServiceConfig;
 
     if ((batchSize > 0 && leaderboard.length >= batchSize) || batchSize === 0) {
-      await updateLeaderboards(blockNumber, blockTimestamp, leaderboard, api);
+      updateLeaderboards(blockNumber, blockTimestamp, sharedData);
     }
   }
 

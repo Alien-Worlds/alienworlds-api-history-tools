@@ -55,7 +55,7 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
         //   )
         // );
         sharedData.leaderboard.push(settagStruct);
-        await this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
+        this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

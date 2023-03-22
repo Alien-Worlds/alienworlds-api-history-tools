@@ -7,6 +7,8 @@ import {
   UsptsWorldsContract,
 } from '@alien-worlds/alienworlds-api-common';
 import { log } from '@alien-worlds/api-core';
+import { ProcessorSharedData } from '../processor.types';
+import { ExtendedLeaderboardServiceConfig } from '../../config/config';
 
 type LeaderboardUpdateStruct = {
   wallet_id: string;
@@ -26,6 +28,7 @@ export const post = async (
   body: LeaderboardUpdateStruct[]
 ): Promise<boolean> => {
   try {
+    log(`Leaderboard Service: Sending ${body.length} structs...`);
     const response = await fetch(new URL('/v1/leaderboard', url), {
       method: 'POST',
       headers: {
@@ -35,6 +38,7 @@ export const post = async (
       body: JSON.stringify(body),
     });
     if (response.ok) {
+      log(`Leaderboard Service: Sent.`);
       return true;
     }
   } catch (error) {
@@ -46,14 +50,20 @@ export const post = async (
 export const updateLeaderboards = async (
   blockNumber: bigint,
   blockTimestamp: Date,
-  structs: (
+  sharedData: ProcessorSharedData
+) => {
+  const {
+    leaderboard,
+    config: {
+      leaderboard: { api },
+    },
+  } = sharedData;
+  const structs: (
     | NotifyWorldContract.Actions.Types.LogmineStruct
     | UsptsWorldsContract.Actions.Types.AddpointsStruct
     | FederationContract.Actions.Types.SettagStruct
-  )[],
-  config: LeaderboardApiConfig
-) => {
-  //
+  )[] = leaderboard.splice(0);
+
   const body: LeaderboardUpdateStruct[] = structs.map(struct => {
     //
     if (struct.account && struct.tag) {
@@ -88,5 +98,5 @@ export const updateLeaderboards = async (
     };
   });
 
-  await post(buildLeaderboardApiUrl(config), body);
+  return post(buildLeaderboardApiUrl(api), body);
 };
