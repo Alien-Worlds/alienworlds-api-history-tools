@@ -2,13 +2,11 @@ import fetch from 'node-fetch';
 import {
   buildLeaderboardApiUrl,
   FederationContract,
-  LeaderboardApiConfig,
   NotifyWorldContract,
   UsptsWorldsContract,
 } from '@alien-worlds/alienworlds-api-common';
 import { log } from '@alien-worlds/api-core';
 import { ProcessorSharedData } from '../processor.types';
-import { ExtendedLeaderboardServiceConfig } from '../../config/config';
 
 type LeaderboardUpdateStruct = {
   wallet_id: string;
@@ -23,9 +21,12 @@ type LeaderboardUpdateStruct = {
   [key: string]: unknown;
 };
 
+type PostFailureCallback = (structs: LeaderboardUpdateStruct[]) => void;
+
 export const post = async (
   url: string,
-  body: LeaderboardUpdateStruct[]
+  body: LeaderboardUpdateStruct[],
+  onFailure: PostFailureCallback
 ): Promise<boolean> => {
   try {
     log(`Leaderboard Service: Sending ${body.length} structs...`);
@@ -43,6 +44,7 @@ export const post = async (
     }
   } catch (error) {
     log(error);
+    onFailure(body);
     return false;
   }
 };
@@ -50,7 +52,8 @@ export const post = async (
 export const updateLeaderboards = async (
   blockNumber: bigint,
   blockTimestamp: Date,
-  sharedData: ProcessorSharedData
+  sharedData: ProcessorSharedData,
+  onFailure: PostFailureCallback
 ) => {
   const {
     leaderboard,
@@ -98,5 +101,5 @@ export const updateLeaderboards = async (
     };
   });
 
-  return post(buildLeaderboardApiUrl(api), body);
+  return post(buildLeaderboardApiUrl(api), body, onFailure);
 };

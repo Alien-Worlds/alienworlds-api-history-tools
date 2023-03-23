@@ -3,6 +3,7 @@
 import {
   AtomicAssetRepository,
   LeaderboardService,
+  LeaderboardUpdateStruct,
 } from '@alien-worlds/alienworlds-api-common';
 import { BroadcastClient, MongoSource } from '@alien-worlds/api-core';
 import {
@@ -11,6 +12,7 @@ import {
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
 import { ExtendedLeaderboardServiceConfig } from '../../config/config';
+import { LeaderboardUpdateBackupRepository } from '../leaderboard/leaderboard-update-backup.repository';
 import { updateLeaderboards } from '../leaderboard/leaderboard.utils';
 import { ProcessorSharedData } from '../processor.types';
 
@@ -35,7 +37,16 @@ export class ExtendedActionTraceProcessor<
     const { batchSize } = config.leaderboard as ExtendedLeaderboardServiceConfig;
 
     if ((batchSize > 0 && leaderboard.length >= batchSize) || batchSize === 0) {
-      updateLeaderboards(blockNumber, blockTimestamp, sharedData);
+      updateLeaderboards(
+        blockNumber,
+        blockTimestamp,
+        sharedData,
+        (structs: LeaderboardUpdateStruct[]) => {
+          //
+          const repository = new LeaderboardUpdateBackupRepository(this.mongoSource);
+          repository.addMany(structs);
+        }
+      );
     }
   }
 
