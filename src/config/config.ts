@@ -40,6 +40,12 @@ export const buildConfig = (): AlienworldsHistoryToolsConfig => {
     batchSize: Number(
       environment.LEADERBOARD_API_BATCH_SIZE || dotEnv.LEADERBOARD_API_BATCH_SIZE
     ),
+    expirationTime:
+      environment.LEADERBOARD_TOKEN_EXPIRATION_TIME ||
+      dotEnv.LEADERBOARD_TOKEN_EXPIRATION_TIME || '1h',
+    secretKey:
+      environment.LEADERBOARD_TOKEN_SECRET_KEY || dotEnv.LEADERBOARD_TOKEN_SECRET_KEY,
+    token: environment.LEADERBOARD_TOKEN || dotEnv.LEADERBOARD_TOKEN,
   };
 
   const atomicassets: AtomicAssetsConfig = {

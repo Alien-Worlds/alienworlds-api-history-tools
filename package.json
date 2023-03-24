@@ -39,12 +39,16 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@alien-worlds/alienworlds-api-common": "^0.0.47",
-    "@alien-worlds/api-core": "^0.0.78",
+    "@alien-worlds/alienworlds-api-common": "^0.0.48",
+    "@alien-worlds/api-core": "^0.0.79",
     "@alien-worlds/api-history-tools": "^0.0.90",
     "@types/cron": "^2.0.1",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/ms": "^0.7.31",
     "commander": "^9.4.1",
     "cron": "^2.3.0",
+    "jsonwebtoken": "^9.0.0",
+    "ms": "^2.1.3",
     "reflect-metadata": "^0.1.13"
   }
 }

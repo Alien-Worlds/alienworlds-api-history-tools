@@ -50,6 +50,9 @@ export type Environment = {
   LEADERBOARD_API_SECURE?: number;
   LEADERBOARD_API_BATCH_SIZE?: number;
   LEADERBOARD_UPDATE_CRON_TIME?: string;
+  LEADERBOARD_TOKEN_SECRET_KEY?: string;
+  LEADERBOARD_TOKEN_EXPIRATION_TIME?: string;
+  LEADERBOARD_TOKEN?: string;
   ATOMICASSETS_API_PORT?: number;
   ATOMICASSETS_API_HOST?: string;
   ATOMICASSETS_API_SECURE?: number;
@@ -57,13 +60,16 @@ export type Environment = {
 
 export type AlienworldsHistoryToolsConfig = HistoryToolsConfig & {
   externalBroadcast: BroadcastConfig;
-  leaderboard: LeaderboardServiceConfig;
+  leaderboard: ExtendedLeaderboardServiceConfig;
   atomicassets: AtomicAssetsConfig;
   cron: CronConfig;
 };
 
 export type ExtendedLeaderboardServiceConfig = LeaderboardServiceConfig & {
   batchSize: number;
+  secretKey: string;
+  expirationTime: string;
+  token?: string;
 };
 
 export type CronConfig = {

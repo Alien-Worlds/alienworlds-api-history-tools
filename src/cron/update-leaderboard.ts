@@ -1,8 +1,12 @@
+import { ExtendedLeaderboardServiceConfig } from './../config';
 import { MongoSource, log } from '@alien-worlds/api-core';
 import { LeaderboardUpdateBackupRepository } from '../processor/leaderboard/leaderboard-update-backup.repository';
 import { postLeaderboard } from '../processor/leaderboard/leaderboard.utils';
 
-export const updateLeaderboard = async (url: string, mongoSource: MongoSource) => {
+export const updateLeaderboard = async (
+  config: ExtendedLeaderboardServiceConfig,
+  mongoSource: MongoSource
+) => {
   log(`[CRON] Checking for unsent leaderboard updates...`);
   const backup = new LeaderboardUpdateBackupRepository(mongoSource);
 
@@ -19,7 +23,7 @@ export const updateLeaderboard = async (url: string, mongoSource: MongoSource) =
     return;
   }
 
-  postLeaderboard(url, content, structs => {
+  postLeaderboard(config, content, structs => {
     log(`[CRON] Sending failed. Backup again.`);
     backup.addMany(structs);
   });

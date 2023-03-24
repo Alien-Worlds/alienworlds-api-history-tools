@@ -1,4 +1,7 @@
 import fetch from 'node-fetch';
+import jwt from 'jsonwebtoken';
+import ms from 'ms';
+
 import {
   buildLeaderboardApiUrl,
   FederationContract,
@@ -7,6 +10,7 @@ import {
 } from '@alien-worlds/alienworlds-api-common';
 import { log } from '@alien-worlds/api-core';
 import { ProcessorSharedData } from '../processor.types';
+import { ExtendedLeaderboardServiceConfig } from '../../config';
 
 type LeaderboardUpdateStruct = {
   wallet_id: string;
@@ -23,19 +27,50 @@ type LeaderboardUpdateStruct = {
 
 type PostFailureCallback = (structs: LeaderboardUpdateStruct[]) => void;
 
+export const generateLeaderboardUpdateToken = (
+  config: ExtendedLeaderboardServiceConfig
+) => {
+  if (!config.secretKey) {
+    return null;
+  }
+
+  const decodedToken = jwt.decode(config.token, { json: true });
+
+  if (decodedToken && decodedToken.exp * 1000 - Date.now() > ms(config.expirationTime)) {
+    return decodedToken;
+  }
+
+  const token = jwt.sign({ service: 'LEADERBOARD_API' }, config.secretKey, {
+    expiresIn: config.expirationTime,
+  });
+
+  config.token = token;
+
+  return token;
+};
+
 export const postLeaderboard = async (
-  url: string,
+  config: ExtendedLeaderboardServiceConfig,
   body: LeaderboardUpdateStruct[],
   onFailure: PostFailureCallback
 ): Promise<boolean> => {
   try {
+    const url = buildLeaderboardApiUrl(config.api);
+    const token = generateLeaderboardUpdateToken(config);
+
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     log(`Leaderboard Service: Sending ${body.length} structs...`);
     const response = await fetch(new URL('/v1/leaderboard', url), {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(body),
     });
     if (response.ok) {
@@ -57,12 +92,7 @@ export const updateLeaderboards = async (
   sharedData: ProcessorSharedData,
   onFailure: PostFailureCallback
 ) => {
-  const {
-    leaderboard,
-    config: {
-      leaderboard: { api },
-    },
-  } = sharedData;
+  const { leaderboard, config } = sharedData;
   const structs: (
     | NotifyWorldContract.Actions.Types.LogmineStruct
     | UsptsWorldsContract.Actions.Types.AddpointsStruct
@@ -103,5 +133,5 @@ export const updateLeaderboards = async (
     };
   });
 
-  return postLeaderboard(buildLeaderboardApiUrl(api), body, onFailure);
+  return postLeaderboard(config.leaderboard, body, onFailure);
 };
