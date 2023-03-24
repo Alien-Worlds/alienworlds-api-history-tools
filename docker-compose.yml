@@ -13,18 +13,20 @@ services:
       - common_network
     volumes:
       - ./:/var/history-tools
-  external_broadcast:
+  extbroadcast:
     build:
       context: .
       args:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     restart: on-failure
     ports:
-      - '9000:9000'
+      - '9001:9001'
+    expose:
+      - 9001
     command: [ 'sh', '-c', 'yarn broadcast:external' ]
     depends_on:
       - broadcast
-      - db
+      - db-history
     networks:
       - common_network
     volumes:
@@ -39,8 +41,8 @@ services:
     command: [ 'sh', '-c', 'yarn processor' ]
     depends_on:
       - broadcast
-      - external_broadcast
-      - db
+      - extbroadcast
+      - db-history
     networks:
       - common_network
     volumes:
@@ -55,8 +57,8 @@ services:
     command: [ 'sh', '-c', 'yarn block-range' ]
     depends_on:
       - broadcast
-      - external_broadcast
-      - db
+      - extbroadcast
+      - db-history
     networks:
       - common_network
     volumes:
@@ -71,14 +73,25 @@ services:
     command: [ 'sh', '-c', 'yarn filler' ]
     depends_on:
       - broadcast
-      - external_broadcast
-      - db
+      - extbroadcast
+      - db-history
+    networks:
+      - common_network
+    volumes:
+      - ./:/var/
+  cron:
+    build:
+      context: .
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    restart: on-failure
+    command: [ 'sh', '-c', 'yarn cron' ]
     networks:
       - common_network
     volumes:
       - ./:/var/
 
-  db:
+  db-history:
     image: mongo
     restart: always
     ports:
@@ -88,7 +101,7 @@ services:
     networks:
       - common_network
     volumes:
-      - database:/data/db
+      - database:/data/db-history
 
 volumes:
   database:

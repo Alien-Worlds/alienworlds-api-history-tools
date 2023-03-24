@@ -23,7 +23,7 @@ type LeaderboardUpdateStruct = {
 
 type PostFailureCallback = (structs: LeaderboardUpdateStruct[]) => void;
 
-export const post = async (
+export const postLeaderboard = async (
   url: string,
   body: LeaderboardUpdateStruct[],
   onFailure: PostFailureCallback
@@ -44,7 +44,9 @@ export const post = async (
     }
   } catch (error) {
     log(error);
-    onFailure(body);
+    if (onFailure) {
+      onFailure(body);
+    }
     return false;
   }
 };
@@ -101,5 +103,5 @@ export const updateLeaderboards = async (
     };
   });
 
-  return post(buildLeaderboardApiUrl(api), body, onFailure);
+  return postLeaderboard(buildLeaderboardApiUrl(api), body, onFailure);
 };

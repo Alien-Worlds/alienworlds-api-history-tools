@@ -11,7 +11,7 @@ import {
   ActionTraceProcessorInput,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
-import { ExtendedLeaderboardServiceConfig } from '../../config/config';
+import { ExtendedLeaderboardServiceConfig } from '../../config';
 import { LeaderboardUpdateBackupRepository } from '../leaderboard/leaderboard-update-backup.repository';
 import { updateLeaderboards } from '../leaderboard/leaderboard.utils';
 import { ProcessorSharedData } from '../processor.types';

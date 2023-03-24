@@ -1,3 +1,10 @@
+import {
+  AtomicAssetsConfig,
+  LeaderboardServiceConfig,
+} from '@alien-worlds/alienworlds-api-common';
+import { BroadcastConfig } from '@alien-worlds/api-core';
+import { HistoryToolsConfig } from '@alien-worlds/api-history-tools';
+
 export type Environment = {
   MONGO_HOSTS?: string;
   MONGO_PORTS?: string;
@@ -42,7 +49,23 @@ export type Environment = {
   LEADERBOARD_API_HOST?: string;
   LEADERBOARD_API_SECURE?: number;
   LEADERBOARD_API_BATCH_SIZE?: number;
+  LEADERBOARD_UPDATE_CRON_TIME?: string;
   ATOMICASSETS_API_PORT?: number;
   ATOMICASSETS_API_HOST?: string;
   ATOMICASSETS_API_SECURE?: number;
+};
+
+export type AlienworldsHistoryToolsConfig = HistoryToolsConfig & {
+  externalBroadcast: BroadcastConfig;
+  leaderboard: LeaderboardServiceConfig;
+  atomicassets: AtomicAssetsConfig;
+  cron: CronConfig;
+};
+
+export type ExtendedLeaderboardServiceConfig = LeaderboardServiceConfig & {
+  batchSize: number;
+};
+
+export type CronConfig = {
+  leaderboardUpdateTime: string;
 };

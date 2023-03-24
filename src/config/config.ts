@@ -1,23 +1,14 @@
 import { MongoConfig, parseToBigInt, BroadcastConfig } from '@alien-worlds/api-core';
-import { HistoryToolsConfig } from '@alien-worlds/api-history-tools';
 import { FeaturedConfig } from '@alien-worlds/api-history-tools/build/common/featured';
 import featuredConfig from '../featured';
 import { readEnvFile } from './config.utils';
-import { Environment } from './config.types';
 import {
-  AtomicAssetsConfig,
-  LeaderboardServiceConfig,
-} from '@alien-worlds/alienworlds-api-common';
-
-export type AlienworldsHistoryToolsConfig = HistoryToolsConfig & {
-  externalBroadcast: BroadcastConfig;
-  leaderboard: LeaderboardServiceConfig;
-  atomicassets: AtomicAssetsConfig;
-};
-
-export type ExtendedLeaderboardServiceConfig = LeaderboardServiceConfig & {
-  batchSize: number;
-};
+  AlienworldsHistoryToolsConfig,
+  Environment,
+  ExtendedLeaderboardServiceConfig,
+  CronConfig,
+} from './config.types';
+import { AtomicAssetsConfig } from '@alien-worlds/alienworlds-api-common';
 
 export const buildConfig = (): AlienworldsHistoryToolsConfig => {
   const environment: Environment = { ...process.env } as Environment;
@@ -75,8 +66,14 @@ export const buildConfig = (): AlienworldsHistoryToolsConfig => {
     driver: environment.EXTERNAL_BROADCAST_DRIVER || dotEnv.EXTERNAL_BROADCAST_DRIVER,
   };
 
+  const cron: CronConfig = {
+    leaderboardUpdateTime:
+      environment.LEADERBOARD_UPDATE_CRON_TIME || dotEnv.LEADERBOARD_UPDATE_CRON_TIME,
+  };
+
   return {
     broadcast,
+    cron,
     externalBroadcast,
     blockchain: {
       endpoint: environment.BLOCKCHAIN_ENDPOINT || dotEnv.BLOCKCHAIN_ENDPOINT,
