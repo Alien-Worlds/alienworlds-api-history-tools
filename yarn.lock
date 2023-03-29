@@ -51,6 +51,21 @@
     redis "^4.6.5"
     reflect-metadata "^0.1.13"
 
+"@alien-worlds/api-core@^0.0.85":
+  version "0.0.85"
+  resolved "https://npm.pkg.github.com/download/@alien-worlds/api-core/0.0.85/4602a10d5370e79c926bc1dda0151fa819bf4663#4602a10d5370e79c926bc1dda0151fa819bf4663"
+  integrity sha512-gnPqnNPfrjojXKpY6jINqar83wBkCClGh5JO/zerG8+4sVfOI5jwB8LBSEWX3iYt9wLobpwS9jru4pTHM4BHlw==
+  dependencies:
+    "@google-cloud/bigquery" "^6.0.3"
+    amqplib "^0.10.3"
+    eosjs "^22.1.0"
+    inversify "^6.0.1"
+    mongodb "4.9.1"
+    nanoid "^3.0.0"
+    node-fetch "2"
+    redis "^4.6.5"
+    reflect-metadata "^0.1.13"
+
 "@alien-worlds/api-history-tools@^0.0.90":
   version "0.0.90"
   resolved "https://npm.pkg.github.com/download/@alien-worlds/api-history-tools/0.0.90/ee525b1aa08456e52824378b1302e540ab95340b#ee525b1aa08456e52824378b1302e540ab95340b"
