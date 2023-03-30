@@ -42,7 +42,8 @@ export const buildConfig = (): AlienworldsHistoryToolsConfig => {
     ),
     expirationTime:
       environment.LEADERBOARD_TOKEN_EXPIRATION_TIME ||
-      dotEnv.LEADERBOARD_TOKEN_EXPIRATION_TIME || '1h',
+      dotEnv.LEADERBOARD_TOKEN_EXPIRATION_TIME ||
+      '1h',
     secretKey:
       environment.LEADERBOARD_TOKEN_SECRET_KEY || dotEnv.LEADERBOARD_TOKEN_SECRET_KEY,
     token: environment.LEADERBOARD_TOKEN || dotEnv.LEADERBOARD_TOKEN,
@@ -115,6 +116,7 @@ export const buildConfig = (): AlienworldsHistoryToolsConfig => {
         ? parseToBigInt(environment.END_BLOCK || dotEnv.END_BLOCK)
         : null,
     mode: environment.MODE || dotEnv.MODE,
+    startFromHead: Boolean(Number(environment.START_FROM_HEAD || dotEnv.START_FROM_HEAD)),
     featured,
     abis: {
       service: {

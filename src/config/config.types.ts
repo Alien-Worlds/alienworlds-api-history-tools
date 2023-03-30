@@ -33,6 +33,7 @@ export type Environment = {
   START_BLOCK?: string;
   END_BLOCK?: string;
   MODE?: string;
+  START_FROM_HEAD?: number;
   HYPERION_URL?: string;
   ABIS_SERVICE_LIMIT?: string;
   ABIS_SERVICE_FILTER?: string;

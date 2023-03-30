@@ -17,6 +17,7 @@ export const buildFillerConfig = (
     abis,
     featured,
     contractReader,
+    startFromHead,
   } = config;
 
   const fillerConfig = {
@@ -27,6 +28,7 @@ export const buildFillerConfig = (
     startBlock,
     endBlock,
     mode,
+    startFromHead,
     featured,
     contractReader,
     abis: abis.service,
