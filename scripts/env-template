@@ -37,4 +37,4 @@ ATOMIC_ASSETS_MAX_ASSETS_REQUESTS_PER_MINUTE=500
 
 MONGO_HOSTS='localhost'
 MONGO_PORTS='27017'
-MONGO_DB_NAME='leaderboard_history_tools'
+MONGO_DB_NAME='alienworlds_history_tools'

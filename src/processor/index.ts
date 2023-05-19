@@ -1,18 +1,15 @@
 import { log } from '@alien-worlds/api-core';
 import { startProcessor } from '@alien-worlds/api-history-tools';
 import { Command } from 'commander';
-import { buildProcessorConfig } from './processor.config';
 import { ProcessorOptions } from './processor.types';
-import { buildConfig } from '../config/config';
+import { buildAlienWorldsProcessorConfig } from './processor.config';
 
 const program = new Command();
 
 const start = async (options: ProcessorOptions) => {
   // setup process config
-  const config = buildConfig();
-  const processorConfig = buildProcessorConfig(options, config);
-
-  startProcessor(processorConfig).catch(log);
+  const config = buildAlienWorldsProcessorConfig(options);
+  startProcessor(config).catch(log);
 };
 
 program

@@ -10,7 +10,7 @@ import {
 } from '@alien-worlds/api-history-tools';
 import featured from '../featured';
 
-export const buildLeaderboardProcessorConfig = (
+export const buildAlienWorldsProcessorConfig = (
   options: ProcessorCommandOptions
 ): ProcessorConfig => {
   const vars = new ConfigVars();
