@@ -5,22 +5,20 @@ import {
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import { ProcessorTaskModel } from '@alien-worlds/api-history-tools';
-import { LeaderboardUpdateBroadcastMessage } from '../../../internal-broadcast/internal-broadcast.message';
-import { ProcessorSharedData } from '../../processor.types';
+import {
+  ActionTraceProcessorInput,
+  ProcessorTaskModel,
+} from '@alien-worlds/api-history-tools';
 import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
 export default class UsptsWorldsActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
-  public async run(
-    model: ProcessorTaskModel,
-    sharedData: ProcessorSharedData
-  ): Promise<void> {
+  public async run(model: ProcessorTaskModel): Promise<void> {
     try {
-      await super.run(model, sharedData);
+      this.input = ActionTraceProcessorInput.create(model);
       const { Ioc, UsptsWorldsActionName, Entities } = UsptsWorldsContract.Actions;
-      const { input, mongoSource, broadcast } = this;
+      const { input, mongoSource } = this;
       const {
         blockNumber,
         blockTimestamp,
@@ -46,18 +44,6 @@ export default class UsptsWorldsActionProcessor extends ExtendedActionTraceProce
       if (name === UsptsWorldsActionName.AddPoints) {
         const addpointsStruct = <UsptsWorldsContract.Actions.Types.AddpointsStruct>data;
         contractModel.data = Entities.AddPoints.fromStruct(addpointsStruct);
-        //
-        // broadcast.sendMessage(
-        //   LeaderboardUpdateBroadcastMessage.create(
-        //     contractModel.blockNumber,
-        //     contractModel.blockTimestamp,
-        //     null,
-        //     null,
-        //     addpointsStruct
-        //   )
-        // );
-        sharedData.leaderboard.push(addpointsStruct);
-        this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

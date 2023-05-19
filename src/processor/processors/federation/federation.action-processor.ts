@@ -5,22 +5,20 @@ import {
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import { ProcessorTaskModel } from '@alien-worlds/api-history-tools';
-import { ProcessorSharedData } from '../../processor.types';
-import { LeaderboardUpdateBroadcastMessage } from '../../../internal-broadcast/internal-broadcast.message';
+import {
+  ActionTraceProcessorInput,
+  ProcessorTaskModel,
+} from '@alien-worlds/api-history-tools';
 import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
 export default class FederationActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
-  public async run(
-    model: ProcessorTaskModel,
-    sharedData: ProcessorSharedData
-  ): Promise<void> {
+  public async run(model: ProcessorTaskModel): Promise<void> {
     try {
-      await super.run(model, sharedData);
+      this.input = ActionTraceProcessorInput.create(model);
       const { Ioc, FederationActionName, Entities } = FederationContract.Actions;
-      const { input, mongoSource, broadcast } = this;
+      const { input, mongoSource } = this;
       const {
         blockNumber,
         blockTimestamp,
@@ -46,16 +44,6 @@ export default class FederationActionProcessor extends ExtendedActionTraceProces
       if (name === FederationActionName.Settag) {
         const settagStruct = <FederationContract.Actions.Types.SettagStruct>data;
         contractModel.data = Entities.SetTag.fromStruct(settagStruct);
-        //
-        // broadcast.sendMessage(
-        //   LeaderboardUpdateBroadcastMessage.create(
-        //     contractModel.blockNumber,
-        //     contractModel.blockTimestamp,
-        //     settagStruct
-        //   )
-        // );
-        sharedData.leaderboard.push(settagStruct);
-        this.sendLeaderboard(blockNumber, blockTimestamp, sharedData);
       } else {
         /*
         In the case of an action (test or former etc.) that is not included in the current ABI and 

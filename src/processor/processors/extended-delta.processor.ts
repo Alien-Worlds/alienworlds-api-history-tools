@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { MongoSource } from '@alien-worlds/api-core';
-import { ActionTraceProcessor } from '@alien-worlds/api-history-tools';
+import { DeltaProcessor } from '@alien-worlds/api-history-tools';
 import { ProcessorSharedData } from '../processor.types';
 
-export class ExtendedActionTraceProcessor<DataType> extends ActionTraceProcessor<
+export class ExtendedDeltaProcessor<DataType> extends DeltaProcessor<
   DataType,
   ProcessorSharedData
 > {

@@ -1,23 +1,20 @@
 import { log } from '@alien-worlds/api-core';
 import {
-  ActionTraceProcessor,
-  ProcessorSharedData,
+  ActionTraceProcessorInput,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
+import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class OtherWorldsActionProcessor extends ActionTraceProcessor<ContractData> {
-  public async run(
-    model: ProcessorTaskModel,
-    sharedData: ProcessorSharedData
-  ): Promise<void> {
+export default class OtherWorldsActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
+  public async run(model: ProcessorTaskModel): Promise<void> {
     try {
-      await super.run(model, sharedData);
+      this.input = ActionTraceProcessorInput.create(model);
       this.resolve();
-  } catch (error){
-    log(error);
-    this.reject(error);
+    } catch (error) {
+      log(error);
+      this.reject(error);
+    }
   }
-}
 }

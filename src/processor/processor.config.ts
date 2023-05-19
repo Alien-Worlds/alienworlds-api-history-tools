@@ -1,44 +1,31 @@
-import { HistoryToolsConfig, ProcessorConfig } from '@alien-worlds/api-history-tools';
-import { ProcessorOptions } from './processor.types';
+import {
+  ConfigVars,
+  buildBroadcastConfig,
+  buildMongoConfig,
+} from '@alien-worlds/api-core';
+import {
+  ProcessorCommandOptions,
+  ProcessorConfig,
+  buildProcessorConfig,
+} from '@alien-worlds/api-history-tools';
+import featured from '../featured';
 
-export const buildProcessorConfig = (
-  options: ProcessorOptions,
-  config: HistoryToolsConfig,
-  sharedData?: { [key: string]: unknown }
+export const buildLeaderboardProcessorConfig = (
+  options: ProcessorCommandOptions
 ): ProcessorConfig => {
-  const {
-    broadcast,
-    processor: { workers, taskQueue },
-    featured,
-    mongo,
-    leaderboard,
-    atomicassets,
-  } = config;
+  const vars = new ConfigVars();
+  const mongo = buildMongoConfig(vars);
+  const processorConfig = buildProcessorConfig(vars, featured, options);
+  const broadcast = buildBroadcastConfig(vars);
 
-  if (options.threads) {
-    workers.threadsCount = options.threads;
-  }
-
-  workers.sharedData = {
+  processorConfig.workers.sharedData = {
     config: {
-      leaderboard,
       mongo,
-      atomicassets,
       broadcast,
     },
-    leaderboard: [],
   };
 
-  if (sharedData) {
-    Object.assign(workers.sharedData, sharedData);
-  }
+  processorConfig.processorLoaderPath = `${__dirname}/processor.worker-loader`;
 
-  return {
-    broadcast,
-    featured,
-    mongo,
-    workers,
-    queue: taskQueue,
-    customProcessorLoaderPath: `${__dirname}/processor.worker-loader`,
-  };
+  return processorConfig;
 };

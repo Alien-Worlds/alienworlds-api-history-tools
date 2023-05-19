@@ -6,20 +6,17 @@ import {
   log,
 } from '@alien-worlds/api-core';
 import {
-  ActionTraceProcessor,
-  ProcessorSharedData,
+  ActionTraceProcessorInput,
   ProcessorTaskModel,
 } from '@alien-worlds/api-history-tools';
+import { ExtendedActionTraceProcessor } from '../extended-action-trace.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class MFederationActionProcessor extends ActionTraceProcessor<ContractData> {
-  public async run(
-    model: ProcessorTaskModel,
-    sharedData: ProcessorSharedData
-  ): Promise<void> {
+export default class MFederationActionProcessor extends ExtendedActionTraceProcessor<ContractData> {
+  public async run(model: ProcessorTaskModel): Promise<void> {
     try {
-      await super.run(model, sharedData);
+      this.input = ActionTraceProcessorInput.create(model);
       const { Ioc, MFederationActionName, Entities } = MFederationContract.Actions;
       const { input, mongoSource } = this;
       const {

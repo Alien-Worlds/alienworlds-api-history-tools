@@ -4,22 +4,16 @@ import {
   DataSourceOperationError,
   log,
 } from '@alien-worlds/api-core';
-import {
-  DeltaProcessor,
-  ProcessorSharedData,
-  ProcessorTaskModel,
-} from '@alien-worlds/api-history-tools';
+import { DeltaProcessorInput, ProcessorTaskModel } from '@alien-worlds/api-history-tools';
 import { AlienWorldsContract } from '@alien-worlds/alienworlds-api-common';
+import { ExtendedDeltaProcessor } from '../extended-delta.processor';
 
 type ContractData = { [key: string]: unknown };
 
-export default class AlienWorldsDeltaProcessor extends DeltaProcessor<ContractData> {
-  public async run(
-    model: ProcessorTaskModel,
-    sharedData: ProcessorSharedData
-  ): Promise<void> {
+export default class AlienWorldsDeltaProcessor extends ExtendedDeltaProcessor<ContractData> {
+  public async run(model: ProcessorTaskModel): Promise<void> {
     try {
-      await super.run(model, sharedData);
+      this.input = DeltaProcessorInput.create(model);
       const { input, mongoSource } = this;
       const { Ioc, AlienWorldsTableName, Entities } = AlienWorldsContract.Deltas;
       const {
